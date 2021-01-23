@@ -1,0 +1,130 @@
+    <!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Lato:light|Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <?!= include('css_reset'); ?>
+    <?!= include('smith_CSS'); ?>
+    <?!= include('lab_CSS'); ?>
+    <title>Job Complete</title>
+</head>
+
+<body>
+    <main> 
+             <div id="loaderDiv" class="jsHide" style="text-align: center;">
+                  <h5>Working ... </h5>
+                  <div style="width:80%; margin:25px auto;">
+                      <div class="preloader-wrapper small active">
+                          <div class="spinner-layer spinner-green-only">
+                              <div class="circle-clipper left">
+                                  <div class="circle"></div>
+                              </div>
+                              <div class="gap-patch">
+                                  <div class="circle"></div>
+                              </div>
+                              <div class="circle-clipper right">
+                                  <div class="circle"></div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div><!--end loaderDiv -->
+              
+              
+        <form id='myForm2' name="myForm2">
+            <div>
+                <h5>Job Complete</h5>
+                <p>Enter the Job ID:</p>
+                                <input id='labJobId' class="cBlock jsTxtRequired" />
+            </div>
+
+                           <div id="addJobCosts">
+                             <p>Additional Job Costs:</p>
+                             
+                             <label>
+                                    <input type="checkbox" class="filled-in" id='liquidHD' name="liquidHD" />
+                                    <span>Liquid handling & disposal</span>
+                             </label>
+                             
+                             <label>
+                                    <input type="checkbox" class="filled-in" id='cylRental' name="cylRental" />
+                                    <span>Cylinder rental/ 35 days</span>
+                             </label>
+                             
+                             <label>
+                            <input type="checkbox" class="filled-in" id='chemConsult' name="chemConsult" />
+                                    <span>Chemist consultation fee</span>
+                             </label>
+                             
+                             <label>
+                            <input type="checkbox" class="filled-in" id='pistonRental' name="pistonRental" />
+                                    <span>Piston cylinder rental/ 10 days</span>
+                             </label>
+                             
+                            </div>
+
+
+                            <p>Collection Fees:</p>
+                            
+                            <div id="collectionFeesDiv">
+
+                     <div>
+                            <p># of techs:</p>
+                            <input id='techsCollectionFee' type="number" class="jsTxtRequired">
+                        </div>
+                        <div>
+                            <p># of miles:</p>
+                            <input id='milesCollectionFee' type="number" class="jsTxtRequired">
+                        </div>
+                        
+                         <div>
+                            <p># of hours:</p>
+                            <input id='hoursCollectionFee' type="number" class="jsTxtRequired">
+                        </div>
+                                    
+                    </div>
+   
+            <div id="jobComplete" class='row center-align'>
+                <div class='col s12 topMargin50'>
+                    <button id='jobCompleteBtn' class="btn waves-effect waves-light btn-medium indigo darken-2">Job Complete
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </div>
+            <p>The Job ID can also be scanned in from the PDF.</p>
+                    <p><span class="instructions material-icons">
+                        sentiment_satisfied_alt
+                    </span></p>
+        </form>
+         <div id="loaderDiv" class="jsHide" style="text-align: center;">
+        <h5>Working ... </h5>
+              <div style="width:80%; margin:25px auto;">
+                <div class="preloader-wrapper small active">
+                  <div class="spinner-layer spinner-green-only">
+                    <div class="circle-clipper left">
+                      <div class="circle"></div>
+                    </div><div class="gap-patch">
+                      <div class="circle"></div>
+                    </div><div class="circle-clipper right">
+                      <div class="circle"></div>
+                    </div>
+                  </div>
+                </div>
+               </div>
+       </div>
+    </main>
+    <footer></footer>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <?!= include('lab_jobComplete_JS'); ?>
+   
+</body>
+
+</html>
+    
+    

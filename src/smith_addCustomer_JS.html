@@ -1,0 +1,293 @@
+<script>
+//variables, VARIABLES!
+
+let addCustomerDataObj = {};
+let attachmentsArr = [];
+
+$(document).keypress(
+    function (event) {
+        if (event.which == '13') {
+            event.preventDefault();
+        }
+    });
+
+
+function autoComplete() {
+    let data = google.script.run.withSuccessHandler(autoComp).fetchActiveCustomers("autoComp");
+
+  function autoComp(data) {
+        $('input.jsAutoComp').autocomplete({
+            data,
+        });
+        google.script.run.withSuccessHandler(autoCompCode).fetchActiveCustomers("autoCompCode");
+    }
+
+    function autoCompCode(compData) {
+        $('#compCode').autocomplete({
+            data: compData,
+        });
+        $("#loaderDiv").hide();
+    }
+}
+
+//only you can prevent dupes
+// -- which is good bc i've got shit to do
+$("#preventDupesDiv").click(function () {
+
+
+    //introducing the dataObj  -- welcome!
+    let compName = $("#compName").val();
+    let compCode = $("#compCode").val().toUpperCase();
+    let compAltName = $("#compAltName").val();
+
+    //make sure there is a company code entered in and it is 3 chars
+    if (compCode.length == 3) {
+        $(".jsHide,#pageOne").hide();
+        $("#loaderDiv").show();
+
+        addCustomerDataObj = {
+            "compName": compName,
+            "compCode": compCode,
+            "compAltName": compAltName
+        };
+        //send it to the backend for verification
+       google.script.run.withSuccessHandler(duplicateNews).preventDup(addCustomerDataObj);
+    } else {
+        $("#compCode").focus();
+        alert("The company code should contain 3 characters.");
+    };
+
+    function duplicateNews(companyInfo) {
+        if (companyInfo) {
+            $(".jsHide,#loaderDiv,#pageOne").hide();
+            $("#goodNews .jsInsertText").text(companyInfo.compName + ", (" + companyInfo.compCode + ")");
+            $("#goodNews").show();
+        } else {
+            $("#preventDupesDiv,#loaderDiv").hide();
+            $("#compCode").prop("disabled", true);
+            $("#pageOne,#theRestoftheForm").show();
+        }
+    }
+})
+
+$(".iconDiv, .really").click(function (e) {
+    e.preventDefault();
+    let currentTarg = e.currentTarget;
+    var toggleDiv = $(currentTarg).parent().next();
+    toggleDiv.slideToggle();
+})
+
+$("#billingSameAsMain").click(function (e) {
+    if (this.checked == true) {
+        $("#billCompanyName").val($("#compName").val());
+        $("#billAddress1").val($("#mainAddress1").val());
+        $("#billAddress2").val($("#mainAddress2").val());
+        $("#billCity").val($("#mainCity").val());
+        $("#billState").val($("#mainState").val());
+        $("#billZip").val($("#mainZip").val());
+    } else {
+        $("#billCompanyName").val($("#compName").val());
+        $("#billAddress1").val("");
+        $("#billAddress2").val("");
+        $("#billCity").val("");
+        $("#billState").val("");
+        $("#billZip").val("");
+    }
+    let updateLabels = M.updateTextFields();
+})
+
+$('#back').click(function () {
+    $(".jsHide").hide();
+    $("#pageOne, #theRestoftheForm").show();
+    $("#compCode").prop("disabled", true);
+})
+
+$('#close').click(function () {
+    $("#addressesReview").slideToggle();
+})
+
+//where's the effing hook, here?
+//thank you, the hook is .change(), btw
+$("input:file").change(function (e) {
+
+    //console.log(e);
+
+    let attachEv = e.currentTarget;
+    let divId = attachEv.id;
+
+    //the attached file
+    let myFile = attachEv.files[0];
+
+    let fileDiv = $(this).closest(".heading");
+    let chkSpan = $(fileDiv).find("span");
+
+    //and now for the Misc Files --- back to the OG plan and just append
+    if (attachEv.className == "jsMultiAttach" && myFile) {
+        myFile.divId = divId;
+        myFile.companyName = $("#compName").val();
+        attachmentsArr.push(myFile);
+        $(fileDiv).append(
+            "<div class='jsAttached'> <p>" + myFile.name + "</p></div>"
+        )
+        $(chkSpan).removeClass("grayClip").text("");
+        $(chkSpan).addClass("grnCheck").text("check");
+
+    } else {
+        if (myFile) {
+            //filter out all the ones that no longer belong
+            attachmentsArr = attachmentsArr.filter((attFile) => {
+                return attFile.divId !== attachEv.id;
+            })
+
+            myFile.divId = divId;
+            myFile.companyName = $("#compName").val();
+            //add file object to attachmentsArr
+            attachmentsArr.push(myFile);
+
+           // console.log(attachmentsArr); //GORGEOUS!!!!!!
+
+            $(fileDiv).find(".jsAttached").remove();
+            $(fileDiv).append(
+                "<div class='jsAttached'> <p>" + myFile.name + "</p></div>"
+            )
+            $(chkSpan).removeClass("grayClip").text("");
+            $(chkSpan).addClass("grnCheck").text("check");
+
+        } else {
+            //filter out all the ones that no longer belong
+            attachmentsArr = attachmentsArr.filter((attFile) => {
+                return attFile.divId !== attachEv.id;
+            })
+           // console.log(attachmentsArr); //still gorgeous :)
+            $(fileDiv).find(".jsAttached").remove();
+            $(chkSpan).removeClass("grnCheck").text("");
+            $(chkSpan).addClass("grayClip").text("attach_file");
+        }
+    }
+})
+
+$("#compInfoNext").click(function (e) {
+    e.preventDefault();
+    //all text inputs added to the dataObj, cleared from the form, written to form from dataObj
+    let textValues = document.querySelectorAll("#compName, #theRestoftheForm input[type=text]");
+    textValues.forEach(function (textValue) {
+        addCustomerDataObj[textValue.id] = textValue.value;
+        document.getElementById(textValue.id).value = "";
+        document.getElementById(textValue.id).value = addCustomerDataObj[textValue.id];
+    });
+    //get the billingSameAs boolean, write it to the dataObj, clear it from the form, write back to form from dataObj
+    addCustomerDataObj.billingSameAsMain = document.getElementById("billingSameAsMain").checked;
+    document.getElementById("billingSameAsMain").checked = false;
+    document.getElementById("billingSameAsMain").checked = addCustomerDataObj.billingSameAsMain;
+
+    //show me myPrecious ...
+    //console.log(addCustomerDataObj); //gorgeous!
+
+    //populate the reviewFields
+    let keys = Object.keys(addCustomerDataObj);
+    let values = Object.values(addCustomerDataObj);
+    let len = keys.length;
+    //fuckity fuck batman I've got my variables named backwards and it's effing up my trace
+    for (let i = 0; i < len; i++) {
+        let item = keys[i];
+        let reviewField = keys[i] + "Rev";
+        if (item.slice(0, 3) == 'lab' || item == "billingSameAsMain") {} else {
+            if (addCustomerDataObj[item] == "") {
+                document.getElementById(reviewField).textContent = "--";
+            } else {
+                document.getElementById(reviewField).textContent = addCustomerDataObj[item];
+            }
+        }
+    };
+        
+    //hide and show
+    $(".jsHide").hide();
+    $("#pageOne").hide();
+    $("#reviewInfoDiv, #addressesReview, #contractsDiv").show();
+})
+
+//The Big Commit aka the Submit
+$("#submit_smith_AddCustomer").click(function (e) {
+    e.preventDefault();
+    //disable the submit button
+    $("#submit_smith_AddCustomer").prop("disabled", true);
+
+    $(".jsHide").hide();
+    $("#loaderDiv").show();
+
+    //add the createdOnDate
+    addCustomerDataObj.createdOnDate = new Date().toDateString();
+
+    //send myPrecious to the backend
+    google.script.run.withSuccessHandler(statusReport).smith_submitNewCustomer(addCustomerDataObj);
+
+    //tracking promises returned in statusReport()
+    let k = 0;
+    let len = attachmentsArr.length;
+
+    function statusReport(msg) {
+        //take back the damn kadam and dig here -- I believe uploadFiles can consume only one file at a time from the attachmentsArr 
+        //... ... ... well, yippee-ki-ay, emeffers. let's dive in
+        
+        //I want to create new company folders even if no files are attached 
+        if(len == 0){
+        google.script.run.withSuccessHandler(fileUploaded).uploadFiles(null,null,null,addCustomerDataObj.compName);
+              } else {
+                      let file = attachmentsArr.shift();
+        let fr = new FileReader();
+        fr.readAsDataURL(file);
+        //fire the event for each item in the array, bc we need the e.target.result 
+        fr.onloadend = function (e) {
+            google.script.run
+                .withSuccessHandler(fileUploaded)
+                .uploadFiles(
+                    e.target.result,
+                    file.name,
+                    file.divId,
+                    file.companyName
+                );
+        }
+        }
+
+        function fileUploaded(status) {
+            k++;
+            console.log(status + " , " + k + " ,  " + len + " , " + attachmentsArr.length);
+            //yeah, I really do want to eval .length every iteration, not go with the value in the len variable
+            while (attachmentsArr.length > 0) {
+                statusReport("called from fileUploaded");
+            }
+            if (k == len || status == "knockItoff") {
+                //reload and reset the form
+                document.getElementById("myForm").reset();
+
+                //replace green checks with gray paper clips
+                $("#contractsDiv .grnCheck").text("attach_file").removeClass("grnCheck");
+
+                //make sure all the attachment names are gone
+                $('#contractsDiv').find(".jsAttached").remove();
+
+                //usual suspects
+                $("#loaderDiv").hide();
+                $("#pageOne").show();
+                $("#preventDupesDiv").show();
+                $("#compCode").prop("disabled", false);
+                $("#submit_smith_AddCustomer").prop("disabled", false);
+
+                //don't go to bed angry
+                attachmentsArr = [];
+                autoComplete();
+                
+                //communication is key
+                alert("New customer added to Smith");
+            }
+        }
+              
+   }; //end statusReport();
+})
+
+$(document).ready(function () {
+    $(".jsHide").hide();
+    $("#loaderDiv").show();
+    autoComplete();
+})
+</script>

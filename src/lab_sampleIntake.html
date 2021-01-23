@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Lato:light|Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <?!= include('css_reset'); ?>
+    <?!= include('smith_CSS'); ?>
+    <?!= include('lab_CSS'); ?>
+    <title>Sample Intake</title>
+</head>
+
+<body>
+    <main>
+     <div id="loaderDiv" class="jsHide" style="text-align: center;">
+                  <h5>Working ... </h5>
+                  <div style="width:80%; margin:25px auto;">
+                      <div class="preloader-wrapper small active">
+                          <div class="spinner-layer spinner-green-only">
+                              <div class="circle-clipper left">
+                                  <div class="circle"></div>
+                              </div>
+                              <div class="gap-patch">
+                                  <div class="circle"></div>
+                              </div>
+                              <div class="circle-clipper right">
+                                  <div class="circle"></div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div><!--end loaderDiv -->
+        <form id='myForm'>
+            <div>
+                <p class="txtred">All fields are required. </p>
+            </div>
+            <div>
+                <h5>Company Name</h5>
+                <p>Select the company name.</p>
+                <select id='companyName' class="cBlock jsTxtRequired" name="options">
+                    <option selected disabled>select company name</option>
+                    <?!= tmp_companyNameList; ?>
+                </select>
+            </div>
+
+            <div id='sampleInfoDiv'>
+                <div class="heading valign-wrapper">
+                    <div class="iconDiv">
+                        <i class="material-icons">add</i>
+                    </div>
+                    <div class="really">
+                        <h5>Sample Information</h5>
+                    </div>
+                </div>
+                <div id="sampleForm" class="top20">
+
+                    <div id="newLocationChkDiv" class="valign-wrapper">
+                        <div>
+                            <label for="newLocationChk">
+                                <input type="checkbox" class="filled-in" id='newLocationChk'
+                                    name='newLocationChk' /><span>I need to input a new location</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div id="regionDiv">
+                            <p>Select region name:</p>
+                            <select id='regionName' class="cBlock jsTxtRequired" name="optionsRegionNames">
+                            <option disabled selected><span class="intro">make selection</span></option>
+                                <option>Bakken</option>
+                                <option>DJ Basin</option>
+                                <option>Eagleford</option>
+                                <option>Permian Basin</option>
+                                <option>Powder River</option>
+                                <option>Western Slope</option>
+                          </select>
+                        </div>
+                    
+                    <div class="newLocationDiv jsHide">
+                        <div>
+                            <p>Input new field name:</p>
+                            <input id='newFieldName' type="text" class="input-field autocomplete" />
+                        </div>
+
+                        <div>
+                            <p>Input new station name:</p>
+                            <input id='newStationName' type="text" class="input-field autocomplete" />
+                        </div>
+
+                        <div>
+                            <p>Input new meter ID#</p>
+                            <input id='newSampleMeterID' type="text" class="input-field autocomplete" />
+                        </div>
+                    </div>
+
+                    <div>
+
+                       <div class="oldLocationDiv">
+                            <p>Select field name:</p>
+                            <select id='fieldName' class="cBlock jsTxtRequired" name="optionsFieldNames">
+                            </select>
+                        </div>
+
+                        <div class="oldLocationDiv">
+                            <p>Select station name:</p>
+                            <select id='stationName' class="cBlock jsTxtRequired" name="optionsStationNames">
+                            </select>
+                        </div>
+
+                        <div class="oldLocationDiv">
+                            <p>meter ID#</p>
+                            <input id='sampleMeterID' class="cBlock jsTxtRequired" disabled>
+                        </div>
+
+                        <div>
+
+                            <p>Select Sample type:</p>
+                            <select id='sampleType' class="cBlock jsTxtRequired" name="optionsSampleTypes">
+                                <option>Spot sample</option>
+                                <option>Composite sample</option>
+                            </select>
+                        </div>
+                        <div>
+                            <p>Sample temperature:</p>
+                            <input id='sampleTemperature' type="text" class="jsTxtRequired" />
+                        </div>
+
+                        <div>
+                            <p>Sample pressure:</p>
+                            <input id='samplePressure' type="text" class="cBlock jsTxtRequired" />
+                        </div>
+                        <div>
+                            <p>Sample date:</p>
+                            <input id='sampleDate' type='date' class="jsTxtRequired">
+                        </div>
+
+                        <div>
+                            <p>Sampled by:</p>
+                            <input id='sampledBy' type="text" class="jsTxtRequired">
+                        </div>
+
+                        <div>
+                            <p>Cylinder number:</p>
+                            <input id='cylinderNumber' type="text" class="jsTxtRequired" />
+                        </div>
+
+                        <div>
+                            <p>Select volume</p>
+                            <select id='cylinderVolume' class="cBlock jsTxtRequired" name="optionsType">
+                                <option>300 ml</option>
+                                <option selected>500 ml</option>
+                            </select>
+                        </div>
+                        <div id="custCylinderDiv"><span>&nbsp;</span>
+                            <label for="customerOwnCylinder">
+                                <input type="checkbox" class="filled-in" id='customerOwnCylinder'
+                                    name='Customer owns this cylinder' /><span>Customer owns this bottle</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!--end sample info div -->
+
+
+                    <!-- begin labTests div -->
+                    <div id="labTests">
+                        <div class="heading valign-wrapper">
+                            <div class="iconDiv">
+                                <i class="material-icons">add</i>
+                            </div>
+                            <div class="really">
+                                <h5>Lab Tests</h5>
+                            </div>
+                        </div>
+                        <div class="jsHide">
+                            <div>
+                                <p>Higlighted tests have custom quoted pricing.</p>
+                            </div>
+                            <div>
+                                <p>Check all tests requested.</p>
+                            </div>
+
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest01' />
+                                    <span>Natural Gas 6+/C7+  (GPA 2261)</span>
+                                </label>
+                            </div>
+
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest02' />
+                                    <span>Natural Gas 6+/C7+ with H2S or O2  (GPA 2261)</span>
+                                </label>
+                            </div>
+
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest03' />
+                                    <span>Refinery Gas 6+/C7+  (ASTM D1945/ UOP539)</span>
+                                </label>
+                            </div>
+                            
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest04' />
+                                    <span>Natural Gas Extended C10+, BTEX  (GPA 2286)</span>
+                                </label>
+                            </div>
+
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest05' />
+                                    <span>Gas HSE Fee  (Fees)</span>
+                                </label>
+                            </div>
+
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest06' />
+                                    <span>NGL/LPG/Pure Product C6+/C7+  (GPA 2177)</span>
+                                </label>
+                            </div>
+
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest07' />
+                                    <span>Condensate/Crude Oil C6+  (GPA 2103M)</span>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest08' />
+                                    <span>Condensate/Crude Oil C7+  (GPA 2103M)</span>
+                                </label>
+                            </div>
+
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest09' />
+                                    <span>NGL/LPG/Pure Product Extended C10+  (GPA 2186)</span>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest10' />
+                                    <span>Condensate/Crude Oil C10+  (GPA 2103/2186M)</span>
+                                </label>
+                            </div>
+
+
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest11' />
+                                    <span>Condensate/Crude Oil C31+  (GPA 2186M)</span>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest12' />
+                                    <span>Sulfur Analysis  (ASTM D5623)</span>
+                                </label>
+                            </div>
+
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest13' />
+                                    <span>Detailed Hydrocarbon Analysis  (ASTM D 6730)</span>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest14' />
+                                    <span>Refinery Liquid Analysis  (ASTM 4424)</span>
+                                </label>
+                            </div>
+
+
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest15' />
+                                    <span>RVP Analysis #1 (Petroleum Products)  (ASTM D 5191)</span>
+                                </label>
+                            </div>
+
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest16' />
+                                    <span>RVP Analysis #2 (Crude Oil)  (ASTM D 6377)</span>
+                                </label>
+                            </div>
+
+
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest17' />
+                                    <span>H2S in Crude Oil  (ASTM D 5705)</span>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest18' />
+                                    <span>Distillation/Liquid Hydrocarbon  (ASTM D 86)</span>
+                                </label>
+                            </div>
+
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest19' />
+                                    <span>BS & W Analysis  (ASTM D 4007)</span>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest20' />
+                                    <span>Condensate/Crude Oil Shrinkage  (API 20.1M)</span>
+                                </label>
+                            </div>
+
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest21' />
+                                    <span>API Gravity of Crude/ Light Petroleum products  (ASTM D 1298)</span>
+                                </label>
+                            </div>
+
+
+                            <div id='Gravity of Liquid Hydrocarbon #2 (API/Specific Gravity of Crude Oil by Hydrometer)'>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest22' />
+                                    <span>API/ Specific Gravity of Crude Oil by Hydrometer  (ASTM D 287)</span>
+                                </label>
+                            </div>
+                                                        <div>
+                                <label>
+                                    <input type="checkbox" class="filled-in" id='labtest23' />
+                                    <span>Natural Gas Extended C9 BLM (GPA 2261)</span>
+                                </label>
+                            </div>
+                            
+                        </div>
+
+
+                    </div>
+                    <!--end labTests div-->
+
+
+
+                    <div id='bottleTransport'>
+                        <div class="heading valign-wrapper">
+                            <div class="iconDiv">
+                                <i class="material-icons">add</i>
+                            </div>
+                            <div class="really">
+                                <h5>Bottle Transport</h5>
+                            </div>
+                        </div>
+                        <div class="jsHide">
+
+                            <p class="instructions">1. How did the sample bottle arrive?</p>
+                            <div id="recvCylinder" class="transport">
+                                <label><input id="custDropOff" class="with-gap" name="recvCylinder"
+                                        value="customer_dropoff" type="radio" checked>
+                                    <span>Dropped off by customer</span>
+                                </label>
+                                <label><input id="custShipToVmetrics" class="with-gap" name="recvCylinder"
+                                        value="shipto_vmetrics" type="radio">
+                                    <span>Shipped to our workshop</span>
+                                </label>
+                                <label><input id="custRequestPickup" class="with-gap" name="recvCylinder"
+                                        value="vmetrics_pickup" type="radio">
+                                    <span>We picked it up</span>
+                                </label>
+                            </div>
+
+                            <!--QUESTION 2 -->
+                            <p class="instructions">2. How will the sample bottle be returned to the customer?</p>
+
+                            <div id="returnCylinder" class="transport">
+                                <label><input id="custPickup" class="with-gap" name="returnCylinder"
+                                        value="customer_pickup" type="radio" checked>
+                                    <span>Picked up by customer</span>
+                                </label>
+                                <label><input id="custShipToCust" class="with-gap" name="returnCylinder"
+                                        value="shipto_customer" type="radio">
+                                    <span>Shipped to customer</span>
+                                </label>
+                                <label><input id="custDelByVmetrics" class="with-gap" name="returnCylinder"
+                                        value="deliverto_customer" type="radio">
+                                    <span>Hand delivered to customer</span>
+                                </label>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="labLeadTime">
+                        <div class="heading valign-wrapper">
+                            <div class="iconDiv">
+                                <i class="material-icons">add</i>
+                            </div>
+                            <div class="really">
+                                <h5>Lead Time</h5>
+                            </div>
+                        </div>
+                        <div class="jsHide">
+                            <p class="instructions">Lead Time begins when we receive and check-in the sample bottle.
+                            </p>
+
+                            <div>
+                                <label>
+                                    <input type="radio" id='lead1' class="with-gap" value="1" name="leadTime" />
+                                    <span>1 Day</span>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    <input type="radio" id='lead3' class="with-gap" value="3" name="leadTime" />
+                                    <span>3 Days</span>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    <input type="radio" id='lead7' class="with-gap" value="7" name="leadTime" />
+                                    <span>5 - 7 Days</span>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    <input type="radio" id='lead14' class="with-gap" value="14" name="leadTime"
+                                        checked />
+                                    <span>10 - 14 Days</span>
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="limsPDF">
+                    <div class="heading valign-wrapper">
+                        <div class="iconDiv">
+                            <i class="material-icons">add</i>
+                        </div>
+                        <div class="really">
+                            <h5>Lab Billing Information PDF</h5>
+                        </div>
+                    </div>
+
+                    <div class="jsHide">
+                        <p>The Lab Billing Information PDF is already being sent to the email group via the script.
+                        </p>
+                        <p> If anyone else wants to receive a copy of the PDF, enter those email addresses here (comma
+                            separated for multiples).</p>
+                        <div class="jsContactDiv input-field">
+                            <input id="confirmationEmail" type="text" placeholder="lab billing email group">
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class='row center-align'>
+                    <div class='col s12 topMargin50'>
+                        <button id='jsSubmitBtn' class="btn waves-effect waves-light btn-large indigo darken-2">Submit
+                            <i class="material-icons right">send</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div id="loaderDiv" class="jsHide" style="text-align: center;">
+            <h5>Working ... </h5>
+            <div style="width:80%; margin:25px auto;">
+                <div class="preloader-wrapper small active">
+                    <div class="spinner-layer spinner-green-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer></footer>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+        <?!= include('lab_sampleIntake_JS'); ?>
+   
+</body>
+
+</html>
+

@@ -1,0 +1,454 @@
+<script>
+let bigFatFieldNamesArray;
+let arrayOfValues;
+
+let companyFieldsList;
+let companyStationList;
+let companyMeterList;
+
+let flag = 0;
+let flag2 = 0;
+let flag3 = 1; //stop judging me .. I will come back and fix this, promise
+
+$(document).keypress(
+    function (event) {
+        if (event.which == '13') {
+            event.preventDefault();
+        }
+    });
+
+$(".iconDiv, .really").click(function (e) {
+    e.preventDefault();
+    let currentTarg = e.currentTarget;
+    var toggleDiv = $(currentTarg).parent().next();
+    toggleDiv.slideToggle();
+})
+
+function afterSampleIntakeLoads(sheet) {
+    google.script.run.withSuccessHandler(afterDropDownArrayReturned).getDropDownArray(sheet);
+}
+
+
+$('#companyName').change(function () {
+    //get the companyName
+    let compName = document.getElementById("companyName").value;
+    let tabName = "labQuotes";
+
+  $("#loaderDiv").show();
+
+  //just in case
+  let getRidOTheGreenArr = $("#labTests input").parent().addClass("blackTxt");
+
+  //the the list of labTests to insert into the DOM
+  google.script.run.withSuccessHandler(buildLabListHtml).getCustomQuoteArray(tabName, compName);
+  
+    //okay, cool -- what I want to happen is that as I iterate over the customQuoteArr, 
+    //I addClass to each div.name == hCCA[i]
+    
+  //process that lab names and quotes array .. have fun!  
+  function buildLabListHtml(grnQuotesArr){
+  
+  if(!grnQuotesArr){   
+    $("#loaderDiv").hide(); 
+    return 
+    };
+  
+  //console.log(grnQuotesArr);
+  
+  grnQuotesArr.forEach(function(quote){
+  $("#labTests input#" + quote).parent().removeClass("blackTxt").addClass('grnTxt'); 
+  })
+   
+  $("#loaderDiv").hide();
+  };
+      
+    //get the big fat array of field locations and send it to createFieldList()
+    google.script.run.withSuccessHandler(createCompanyFieldsArray).getDropDownArray("fieldNames");
+
+    //set the value of the companyFieldsList based on company name selection
+    function createCompanyFieldsArray(fullFieldNamesArray) {
+
+        //populate that variable
+        bigFatFieldNamesArray = fullFieldNamesArray.filter(function (r) {
+            return true;
+        })
+
+        let filteredAOV = fullFieldNamesArray.filter(function (r) {
+            return r[0] == compName;
+        });
+
+        companyFieldsList = addUniqueValues(filteredAOV, 1);
+        showFieldsList();
+    }
+});
+
+function showFieldsList() {
+    $('#newFieldName').autocomplete({
+        data: companyFieldsList,
+    });
+}
+
+//I choose .change()
+$("#newFieldName").change(function () {
+    //company name & field name filters
+    let compName = $('#companyName').val();
+    let newFN = $('#newFieldName').val();
+
+    //if no newFN, end this farce
+    if (newFN == "") {
+        //console.log("no value in newFN");
+        return;
+    }
+
+    let filteredAOV = bigFatFieldNamesArray.filter(function (r) {
+        return r[0] == compName && r[1] == newFN
+    });
+    try {
+        showStationsList(addUniqueValues(filteredAOV, 2));
+    } catch (err) {
+        console.error(err)
+    };
+});
+
+function showStationsList(stationList) {
+    //console.log(stationList);
+    let quickArr = Object.keys(stationList);
+    if (quickArr.indexOf("[not indicated]" === -1)) {
+        stationList["[not indicated]"] = null;
+    }
+    $('#newStationName').autocomplete({
+        data: stationList,
+    });
+};
+
+//lather, rinse repeat for the meterList -- then code any validation that makes sense 
+$("#newStationName").change(function () {
+    let compName = $('#companyName').val();
+    let newFN = $('#newFieldName').val();
+    let newSN = $('#newStationName').val();
+    //if no newSN, end this farce
+    if (newSN == "") {
+        //console.log("no value in newSN");
+        return;
+    }
+    let filteredAOV = bigFatFieldNamesArray.filter(function (r) {
+        return r[0] == compName && r[1] == newFN && r[2] == newSN
+    });
+    try {
+        companyMeterList = showMeterList(addUniqueValues(filteredAOV, 3));
+    } catch (err) {
+        console.error(err)
+    };
+});
+
+function showMeterList(meterList) {
+    let quickArr = Object.keys(meterList);
+    $('#newSampleMeterID').val(quickArr[0]).autocomplete({
+        data: meterList,
+    });
+    return quickArr;
+};
+
+function addUniqueValues(filteredAOV, index) {
+    let currentlyAdded = [];
+    let dataObj = {};
+    filteredAOV.forEach(function (r) {
+        if (currentlyAdded.indexOf(r[index]) === -1) {
+            currentlyAdded.push(r[index]);
+        }
+    })
+    for (i = 0; i < currentlyAdded.length; i++) {
+        dataObj[currentlyAdded[i]] = null;
+    }
+    return dataObj;
+}
+
+function addUniqueItems(item, filteredAOV, index) {
+    let currentlyAdded = [];
+    item.innerHTML = '<option disabled selected>make selection</option>';
+    filteredAOV.sort();
+    filteredAOV.forEach(function (r) {
+        if (currentlyAdded.indexOf(r[index]) === -1) {
+            let option = document.createElement("option");
+            option.textContent = r[index];
+            item.appendChild(option);
+            currentlyAdded.push(r[index]);
+        }
+   })
+}
+
+function afterDropDownArrayReturned(arrayOfArrays) {
+    $("form").show();
+    $("#loaderDiv").hide();
+    $(".newLocationDiv").hide();
+    $(".oldLocationDiv").show();
+    arrayOfValues = arrayOfArrays.filter(function (r) {
+        return true;
+    });
+    afterFirstDropDownChanged();
+}
+
+function afterFirstDropDownChanged() {
+    let fieldName = document.getElementById("fieldName");
+    let compName = $("#companyName").val();
+    let filteredAOV = arrayOfValues.filter(function (r) {
+        return r[0] == compName
+    });
+    addUniqueItems(fieldName, filteredAOV, 1);
+    afterSecondDropDownChanged();
+}
+
+
+function afterSecondDropDownChanged() {
+    let stationName = document.getElementById("stationName");
+    let compName = $("#companyName").val();
+    let fieldName = $("#fieldName").val();
+    let filteredAOV = arrayOfValues.filter(function (r) {
+        return r[0] == compName && r[1] == fieldName
+    });
+    addUniqueItems(stationName, filteredAOV, 2);
+    afterThirdDropDownChanged();
+}
+
+function afterThirdDropDownChanged() {
+    let sampleMeterID = document.getElementById("sampleMeterID");
+    sampleMeterID.value = '';
+    let compName = $("#companyName").val();
+    let fieldName = $("#fieldName").val();
+    let stationName = $("#stationName").val();
+    let filteredAOV = arrayOfValues.filter(function (r) {
+        return r[0] == compName && r[1] == fieldName && r[2] == stationName
+    });
+    //console.log(filteredAOV);
+    $("#sampleMeterID").val(filteredAOV[0][3]);
+}
+
+$("#newLocationChk").change(function (e) {
+    if (e.currentTarget.checked == true) {
+        $(".newLocationDiv").show();
+        $(".oldLocationDiv").hide();
+        $("#newFieldName, #newStationName, #newSampleMeterID").css("background-color", "#e6ffe6");
+        //remove the jsTxtReuired class 
+        $("#fieldName, #stationName, #sampleMeterID").removeClass('jsTxtRequired');
+        showFieldsList();
+    }
+    if (e.currentTarget.checked == false) {
+        $(".newLocationDiv").hide();
+        $(".oldLocationDiv").show();
+        $("#newFieldName, #newStationName, #newSampleMeterID").val("");
+        $("#fieldName, #stationName, #sampleMeterID").addClass('jsTxtRequired');
+        flag3 = 1;
+    }
+});
+
+
+//SUBMITTING THE FORM and assembling the formObj
+$('#jsSubmitBtn').click(function (e) {
+    e.preventDefault();
+
+
+    $("#loaderDiv").show();
+    $("#myForm").hide();
+
+    let formObj = {};
+
+    let checkFields = $('#labTests input:checkbox');
+    let chklen = checkFields.length;
+    let checkArr = [];
+
+    let labJobId;
+
+    let date = new Date();
+    let labDeadline = new Date();
+
+    let txtRequired = document.getElementsByClassName('jsTxtRequired');
+    let txtlen = txtRequired.length;
+
+    // let newLocations = document.getElementsByClassName('newLocationDiv'); -- ugh, really? there are three fields, ffs
+    let isNew = document.getElementById('newLocationChk').checked; //is this a new location?
+
+    let defaultConfEmail = "kim.sherrell@mobiedev.com,"; //keep the comma at the end
+
+    //disable the Submit button to prevent multiple submissions
+    $('#jsSubmitBtn').attr('disabled', true);
+
+    //check some bullshit at the gate 
+    if ($('#newSampleMeterID').val()) {
+        if (companyMeterList.includes($('#newSampleMeterID').val())) {
+            alert("This location already exists. Please use the drop-down selections for this sample.");
+
+            $('#jsSubmitBtn').attr('disabled', false); //reactivate the submit button
+            $("#newLocationChk").prop('checked', false); //release the checkbox
+            flag3 = 1; //ugh
+            $("#loaderDiv").hide();
+            $(".newLocationDiv input").val("");
+            $(".newLocationDiv").hide();
+            $(".oldLocationDiv").show();
+            $("form").show();
+            return; //end this farce
+        };
+    }
+    //see about maybe writing a better function effedUpTheSubmit() ...later
+
+    //handle the new kids in town
+    if (isNew) {
+        //if the checkbox is selected, then write this info to the fieldNames tab and also to the billing tab as part of the newly created line item
+        //all three fields are required
+        let newFieldName = $("#newFieldName").val().toUpperCase().trim();
+        let newStationName = $("#newStationName").val().toUpperCase().trim();
+        let newSampleMeterID = $("#newSampleMeterID").val().toUpperCase().trim();
+        let locValsArr = [
+            newFieldName,
+            newStationName,
+            newSampleMeterID
+        ];
+
+        //if any of the newFields are blank... 
+        if (locValsArr.indexOf("") !== -1) {
+            flag3 = 0;
+        }
+
+        //if none of the newFields are blank ... 
+        if (locValsArr.indexOf("") === -1) {
+            formObj.newFieldName = newFieldName;
+            formObj.newStationName = newStationName;
+            formObj.newSampleMeterID = newSampleMeterID;
+
+            //don't forget, these won't be picked up, so need these vals for the billing spreadsheet and pdf
+            formObj.fieldName = newFieldName;
+            formObj.stationName = newStationName;
+            formObj.sampleMeterID = newSampleMeterID;
+            flag3 = 1;
+        }
+        //console.log(formObj); //how is myPrecious?
+
+    }
+    //this is not in the jsTxtRequired class
+    formObj.customerOwnBottle = document.getElementById("customerOwnCylinder").checked;
+
+    //lab test checkboxes trues and falses
+    for (let i = 0; i < chklen; i++) {
+        if (checkFields[i].checked == true) {
+            flag2 = 1;
+        }
+        checkArr.push(checkFields[i].checked);
+    }
+
+    //put required values in the formObj
+    for (let i = 0; i < txtlen; i++) {
+        let textFieldId = '#' + txtRequired[i].id;
+        if (txtRequired[i].value !== "") {
+            formObj[txtRequired[i].id] = txtRequired[i].value
+            flag = 1;
+        } else {
+            flag = 0;
+            break;
+        }
+    }
+    //I found the answer I could not see earlier -- I need a second break in the for loop-- fix later, the flags are actually working, tho inelegant 
+    //... I WAS TIRED
+    //console.log("flag: " + flag);
+
+    //Brain, please talk to me. I need your brilliance... pleeeez
+    if (flag == 0 || flag2 == 0 || flag3 == 0) {
+        $("#loaderDiv").hide();
+        $("form").show();
+        $('#jsSubmitBtn').attr('disabled', false);
+        if (flag == 0 || flag3 == 0) {
+            alert('All fields are required.');
+        }
+        if (flag2 == 0) {
+            alert('Please select at least one lab service');
+        }
+    } else {
+        //do I have everything?
+
+        //grab the lab test checkboxes 
+        formObj.checkArr = checkArr;
+
+        //grab the radio buttons
+        formObj.returnCylinder = $("#returnCylinder input:checked").val(); //omg, Brain, thank you for showing up! welcome, welcome! 
+        formObj.recvCylinder = $("#recvCylinder input:checked").val();
+        formObj.labLeadTime = $("#labLeadTime input:checked").val();
+
+        //don't forget the createdOnDate
+        formObj.createdOnDate = date.toDateString();
+
+        //and the deadline
+        labDeadline.setDate(date.getDate() + parseInt(formObj.labLeadTime));
+        formObj.labDeadline = labDeadline.toDateString();
+
+        //get any extra email addresses for the conf email -- field is not class=jsTextReq
+        if ($("#confirmationEmail").val()) {
+            formObj.confirmationEmail = defaultConfEmail + $("#confirmationEmail").val();
+        } else {
+            formObj.confirmationEmail = defaultConfEmail;
+        }
+
+        //how's myPrecious?
+        //console.log(formObj); //gorgeous!
+
+        //the handoff
+        google.script.run.withSuccessHandler(gotTheCompCode).getTheCompCode(formObj.companyName);
+    }
+
+
+    function gotTheCompCode(theCompCode) {
+
+        function resetForm(theTrigger) {
+            console.log(theTrigger);
+            $('#jsSubmitBtn').attr('disabled', false);
+
+            if (theTrigger == 'AOK') {
+                //flags
+                flag = 0;
+                flag2 = 0;
+                flag3 = 1;
+                companyFieldsList = {};
+                ///hide and show     
+                $("#loaderDiv").hide();
+                $("form").show();
+                $("#fieldName, #stationName, #sampleMeterID").addClass('jsTxtRequired');
+
+                //reset the form     
+                document.getElementById("myForm").reset();
+                afterSampleIntakeLoads("fieldNames");
+                showFieldsList();
+                formObj = {};
+                alert('Sample submitted'); //sailing on the cool and bright clear water/ it's kind of a special feeling/ out on the sea alone/ staring at the full moon like a lover... 
+                //time for a cool change/ now that my life is so prearranged/ I know that it's time for a cool change
+            };
+        }
+        //this is where the labJobId and barcode are created and added to the formObj
+        let timeCode = Date.parse(date) / 1000;
+        let labJobId = theCompCode + timeCode;
+        let barCode = '*' + labJobId + '*';
+
+        formObj.compCode = theCompCode;
+        formObj.labJobId = labJobId;
+        formObj.barCode = barCode;
+
+        google.script.run.withSuccessHandler(resetForm).scrubForm(formObj);
+    }
+}) //END The Big Commit
+
+$("#companyName").change(function () {
+    afterFirstDropDownChanged();
+});
+
+$("#fieldName").change(function () {
+    afterSecondDropDownChanged();
+});
+
+$("#stationName").change(function () {
+    afterThirdDropDownChanged();
+});
+
+$(document).ready(function () {
+    afterSampleIntakeLoads("fieldNames");
+    $("form").hide();
+    $(".jsHide").hide();
+    $("#loaderDiv").show();
+
+});
+</script>

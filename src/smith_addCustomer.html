@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Lato:light|Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <?!= include('css_reset'); ?>
+    <?!= include('smith_CSS'); ?>
+        <title>Smith: Add Customer</title>
+        </head>
+
+        <body>
+            <main>
+              <div id="loaderDiv" class="jsHide" style="text-align: center;">
+                  <h5>Working ... </h5>
+                  <div style="width:80%; margin:25px auto;">
+                      <div class="preloader-wrapper small active">
+                          <div class="spinner-layer spinner-green-only">
+                              <div class="circle-clipper left">
+                                  <div class="circle"></div>
+                              </div>
+                              <div class="gap-patch">
+                                  <div class="circle"></div>
+                              </div>
+                              <div class="circle-clipper right">
+                                  <div class="circle"></div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div><!--end loaderDiv -->
+              
+                <div id="goodNews" class="jsHide" style="text-align: center;font-size: 1rem; padding: 20px 0;">
+                    <h5>Good News, Everyone!</h5>
+                    <h5 class="next"><span class="instructions material-icons">
+                            thumb_up_alt
+                        </span></h5>
+                    <p class="next">Smith already knows these guys.</p>
+
+                    <p class="next txtred jsInsertText"></p>
+                    <p class="next">Go to Update Customer to edit or add information.</p>
+                </div>
+<form id='myForm'>
+    <div id="pageOne">
+        <div class="heading valign-wrapper">
+            <div class="really">
+                <p>+ Instructions</p>
+            </div>
+        </div>
+        <div class="jsHide">
+            <p class="instructions">In a surprising reversal of form, <br />...<br />...<br /></p>
+            <span class="instructions material-icons">
+                sentiment_satisfied_alt
+            </span>
+            <p class="instructions">only two fields are required when creating a new customer:</p>
+            <ol class="instructions">
+                <li>Company Name</li>
+                <li>Company Code</li>
+            </ol>
+            <p class="instructions">You can always start a new customer here, then go to 'Update/
+                Review' later
+                to complete the customer info.</p>
+        </div>
+
+        <div class="address">
+            <h5>Company Name and Code</h5>
+            <div class="input-field">
+                <input id="compName" type="text" class="jsAutoComp validate autocomplete">
+                <label for="compName">Company name</label>
+            </div>
+            <div class="input-field">
+                <input id="compAltName" type="text" class="jsAutoComp validate autocomplete">
+                <label for="compAltName">Alternate or previous company name</label>
+            </div>
+            <div class="input-field">
+                <input id="compCode" type="text" class="jsAutoComp validate autocomplete" maxlength="3">
+                <label for="compCode">Company Code</label>
+            </div>
+            <div id="preventDupesDiv" class="preventDupes">
+                <span class="material-icons">
+                    child_care
+                    </span> 
+                    <span class="material-icons">
+                        child_care
+                        </span> 
+                        <span class="material-icons">
+                            child_care
+                            </span> 
+                <p>Only You Can Prevent Duplicates
+                </p>
+            </div>
+        </div>
+
+        <div id="theRestoftheForm" class="jsHide">
+            <div class="heading valign-wrapper">
+                <div class="iconDiv">
+                    <span class="material-icons">add</span>
+                </div>
+                <div class="really">
+                    <h5>Main Phone</h5>
+                </div>
+            </div>
+            <div class="jsHide">
+                <div class="input-field">
+                    <input id="mainPhone" type="text" class="validate">
+                    <label for="mainPhone">Main Phone</label>
+                </div>
+            </div>
+
+            <div class="heading valign-wrapper">
+                <div class="iconDiv">
+                    <span class="material-icons">add</span>
+                </div>
+                <div class="really">
+                    <h5>Main Address</h5>
+                </div>
+            </div>
+            <div class="jsHide">
+                <div class="input-field">
+                    <input id="mainAddress1" type="text" class="validate">
+                    <label for="mainAddress1">Address Line 1</label>
+                </div>
+                <div class="input-field">
+                    <input id="mainAddress2" type="text" class="validate">
+                    <label for="mainAddress2">Address Line 2</label>
+                </div>
+                <div class="input-field">
+                    <input id="mainCity" type="text" class="validate">
+                    <label for="mainCity">City</label>
+                </div>
+                <div class="input-field">
+                    <input id="mainState" type="text" class="validate">
+                    <label for="mainState">State</label>
+                </div>
+                <div class="input-field">
+                    <input id="mainZip" type="text" class="validate">
+                    <label for="mainZip">Zip</label>
+                </div>
+            </div>
+
+
+
+            <div class="heading valign-wrapper">
+                <div id="note1" class="iconDiv">
+                    <span class="material-icons">add</span>
+                </div>
+                <div class="really">
+                    <h5>Billing Address</h5>
+                </div>
+            </div>
+            <div class="jsHide jsLabelActive">
+                <div id="billingSameAddDiv">
+
+                    <label>
+                        <input type="checkbox" id='billingSameAsMain' name='billingSameAsMain' />
+                        <span>Same as main address</span>
+                    </label>
+                </div>
+
+                <div class="input-field">
+                    <input id="billCompanyName" type="text" class="validate">
+                    <label for="billCompanyName">Billing Company Name</label>
+                </div>
+                <div class="input-field">
+                    <input id="billAddress1" type="text" class="validate">
+                    <label for="billAddress1">Billing Address Line 1</label>
+                </div>
+                <div class="input-field">
+                    <input id="billAddress2" type="text" class="validate">
+                    <label for="billAddress2">Billing Address Line 2</label>
+                </div>
+                <div class="input-field">
+                    <input id="billCity" type="text" class="validate">
+                    <label for="billCity">City</label>
+                </div>
+                <div class="input-field">
+                    <input id="billState" type="text" class="validate">
+                    <label for="billState">State</label>
+                </div>
+                <div class="input-field">
+                    <input id="billZip" type="text" class="validate">
+                    <label for="billZip">Zip</label>
+                </div>
+            </div>
+
+            <div class="topDivContainer">
+                <div class="heading valign-wrapper">
+                    <div class="iconDiv">
+                        <span class="material-icons">add</span>
+                    </div>
+                    <div class="really">
+                        <h5>Primary Contact</h5>
+                    </div>
+                </div>
+
+                <div class="jsHide">
+                    <div class="input-field">
+                        <input id="primContactName" type="text" class="validate">
+                        <label for="primContactName">Name</label>
+                    </div>
+                    <div class="input-field">
+                        <input id="primContactTitle" type="text" class="validate">
+                        <label for="primContactTitle">Title</label>
+                    </div>
+                    <div class="input-field">
+                        <input id="primContactCell" type="text" class="validate">
+                        <label for="primContactCell">Cell Phone</label>
+                    </div>
+                    <div class="input-field">
+                        <input id="primContactEmail" type="text" class="validate">
+                        <label for="primContactEmail">Email</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topDivContainer">
+                <div class="heading valign-wrapper">
+                    <div class="iconDiv">
+                        <span class="material-icons">add</span>
+                    </div>
+                    <div class="really">
+                        <h5>Billing Contact</h5>
+                    </div>
+                </div>
+
+                <div class="jsHide">
+                    <div class="input-field">
+                        <input id="billContactName" type="text" class="validate">
+                        <label for="billContactName">Name</label>
+                    </div>
+                    <div class="input-field">
+                        <input id="billContactCell" type="text" class="validate">
+                        <label for="billContactCell">Phone</label>
+                    </div>
+                    <div class="input-field">
+                        <input id="billContactEmail" type="text" class="validate">
+                        <label for="billContactEmail">Email</label>
+                    </div>
+                    <div class="input-field">
+                        <input id="billInvComment" type="text" class="validate">
+                        <label for="billInvComment">Comment/ Instructions</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topDivContainer jsAddContact">
+                <div class="heading valign-wrapper">
+                    <div class="iconDiv">
+                        <span class="material-icons">add</span>
+                    </div>
+                    <div class="really">
+                        <h5>Additional Contacts</h5>
+                    </div>
+                </div>
+                <div class="jsHide">
+                    <div class="input-field">
+                        <input id="addContactName0" type="text" class="validate">
+                        <label for="addContactName0">Contact Name</label>
+                    </div>
+                    <div class="input-field">
+                        <input id="addContactCell0" type="text" class="validate">
+                        <label for="addContactCell0">Contact Phone</label>
+                    </div>
+                    <div class="input-field">
+                        <input id="addContactEmail0" type="text" class="validate">
+                        <label for="addContactEmail0">Contact Email</label>
+                    </div>
+                    <div class="input-field">
+                        <input id="addContactReason0" type="text" class="validate">
+                        <label for="addContactReason0">Comment/ Reason for contact</label>
+                    </div>
+
+
+                    <div class="jsAddContact">
+                        <div class="heading valign-wrapper">
+                            <div class="iconDiv">
+                                <span class="material-icons">add</span>
+                            </div>
+                            <div class="really">
+                                <h5>Additional Contact #2</h5>
+                            </div>
+                        </div>
+                        <div class="jsHide">
+                            <div class="input-field">
+                                <input id="addContactName1" type="text" class="validate">
+                                <label for="addContactName1">Contact Name</label>
+                            </div>
+                            <div class="input-field">
+                                <input id="addContactCell1" type="text" class="validate">
+                                <label for="addContactCell1">Contact Phone</label>
+                            </div>
+                            <div class="input-field">
+                                <input id="addContactEmail1" type="text" class="validate">
+                                <label for="addContactEmail1">Contact Email</label>
+                            </div>
+                            <div class="input-field">
+                                <input id="addContactReason1" type="text" class="validate">
+                                <label for="addContactReason1">Comment/ Reason for contact</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="jsAddContact">
+                        <div class="heading valign-wrapper">
+                            <div class="iconDiv">
+                                <span class="material-icons">add</span>
+                            </div>
+                            <div class="really">
+                                <h5>Additional Contact #3</h5>
+                            </div>
+                        </div>
+                        <div class="jsHide">
+                            <div class="input-field">
+                                <input id="addContactName2" type="text" class="validate">
+                                <label for="addContactName2">Contact Name</label>
+                            </div>
+                            <div class="input-field">
+                                <input id="addContactCell2" type="text" class="validate">
+                                <label for="addContactCell2">Contact Phone</label>
+                            </div>
+                            <div class="input-field">
+                                <input id="addContactEmail2" type="text" class="validate">
+                                <label for="addContactEmail2">Contact Email</label>
+                            </div>
+                            <div class="input-field">
+                                <input id="addContactReason2" type="text" class="validate">
+                                <label for="addContactReason2">Comment/ Reason for contact</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="topDivContainer">
+                <div class="heading valign-wrapper">
+                    <div class="iconDiv">
+                        <span class="material-icons">add</span>
+                    </div>
+                    <div class="really">
+                        <h5>Lab Services Quotes</h5>
+                    </div>
+                </div>
+                <div class="jsHide">
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote01' name='Natural Gas 6+/C7+' />
+                        <p>Natural Gas 6+/C7+</p>
+                    </div>
+
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote02' name='Natural Gas 6+/C7+ with H2S or O2' />
+                        <p>Natural Gas 6+/C7+ with H2S or O2</p>
+                    </div>
+
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote03' name='Refinery Gas 6+/C7+' />
+                        <p>Refinery Gas 6+/C7+</p>
+                    </div>
+
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote04' name='Natural Gas Extended C10+, BTEX' />
+                        <p>Natural Gas Extended C10+, BTEX</p>
+                    </div>
+
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote05' name='Gas HSE Fee' />
+                        <p>Gas HSE Fee</p>
+                    </div>
+
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote06' name='NGL/LPG/Pure Product C6+/C7+' />
+                        <p>NGL/LPG/Pure Product C6+/C7+</p>
+                    </div>
+
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote07' name='Condensate/Crude Oil C6+' />
+                        <p>Condensate/Crude Oil C6+</p>
+                    </div>
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote08' name='Condensate/Crude Oil C7+' />
+                        <p>Condensate/Crude Oil C7+</p>
+                    </div>
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote09' name='NGL/LPG/Pure Product Extended C10+' />
+                        <p>NGL/LPG/Pure Product <br />Extended C10+</p>
+                    </div>
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote10' name='Condensate/Crude Oil C10+' />
+                        <p>Condensate/Crude Oil C10+</p>
+                    </div>
+
+
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote11' name='Condensate/Crude Oil C31+' />
+                        <p>Condensate/Crude Oil C31+</p>
+                    </div>
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote12' name='Sulfur Analysis' />
+                        <p>Sulfur Analysis</p>
+
+                    </div>
+
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote13' name='Detailed Hydrocarbon Analysis' />
+                        <p>Detailed Hydrocarbon Analysis</p>
+
+                    </div>
+                    <div class="labQuote">
+
+                        <input type="text" id='labTestQuote14' name='Refinery Liquid Analysis' />
+                        <p>Refinery Liquid Analysis</p>
+                    </div>
+
+
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote15' name='RVP Analysis #1 (Petroleum Products)' />
+                        <p>RVP Analysis #1 <br />(Petroleum Products)</p>
+                    </div>
+
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote16' name='RVP Analysis #2 (Crude Oil)' />
+                        <p>RVP Analysis #2 (Crude Oil)</p>
+                    </div>
+
+
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote17' name='H2S in Crude Oil' />
+                        <p>H2S in Crude Oil</p>
+                    </div>
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote18' name='Distillation/Liquid Hydrocarbon' />
+                        <p>Distillation/Liquid Hydrocarbon</p>
+                    </div>
+
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote19' name='BS & W Analysis' />
+                        <p>BS & W Analysis</p>
+                    </div>
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote20' name='Condensate/Crude Oil Shrinkage' />
+                        <p>Condensate/Crude Oil Shrinkage</p>
+
+                    </div>
+
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote21'
+                            name='Gravity of Liquid Hydrocarbon #1 (API Gravity of Crude/ Light Petroleum products)' />
+                        <p>Gravity of Liquid Hydrocarbon #1<br />(API Gravity of Crude/ Light
+                            <br />Petroleum products)</p>
+
+                    </div>
+                    <div class="labQuote">
+                        <p> <input type="text" id='labTestQuote22'
+                                name='Gravity of Liquid Hydrocarbon #2 (API/Specific Gravity of Crude Oil by Hydrometer' />
+                        </p>
+                        <p>
+                            Gravity of Liquid Hydrocarbon #2<br />(API/Specific Gravity of Crude Oil
+                            <br />by Hydrometer)</p>
+                    </div>
+                                        
+                    <div class="labQuote">
+                        <input type="text" id='labTestQuote23' name='Natural Gas Extended C9 BLM' />
+                        <p>Natural Gas Extended C9 BLM</p>
+                    </div>
+                    
+                    
+                    <div>
+                        <p class="instructions txtred">Please double check the lab quotes before
+                            clicking 'Next'
+                            as these will not be open for review on the next page.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- END COMPANY INFO -->
+            <div class='next center-align'>
+                <button id='compInfoNext' class="btn waves-effect waves-light btn-large indigo darken-2">Next
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+
+        </div>
+
+    </div><!-- END pageOne -->
+
+    <div id="reviewInfoDiv" class="jsHide">
+        <div class="heading valign-wrapper">
+            <div class="iconDiv">
+                <span class="material-icons">add</span>
+            </div>
+            <div class="really">
+                <h5>Review Entries</h5>
+            </div>
+        </div>
+        <div id="addressesReview" class="jsHide">
+            <div id="compNameReview" class="reviewDiv">
+                <p></p>
+                <p id="compNameRev"></p>
+                <p id="compCodeRev"></p>
+                <p id="compAltNameRev"></p>
+            </div>
+
+            <div id="compNameReview" class="reviewDiv">
+                <p class="reviewP">Main Phone</p>
+                <p id="mainPhoneRev"></p>
+            </div>
+
+            <div id="compMainAddressReview" class="reviewDiv">
+                <p>Main Address</p>
+                <p id="mainAddress1Rev"></p>
+                <p id="mainAddress2Rev"></p>
+                <p id="mainCityRev"></p>
+                <p id="mainStateRev"></p>
+                <p id="mainZipRev"></p>
+            </div>
+
+            <div id="compBillAddressReview" class="reviewDiv">
+                <p>Billing Address</p>
+                <p id="billCompanyNameRev"></p>
+                <p id="billAddress1Rev"></p>
+                <p id="billAddress2Rev"></p>
+                <p id="billCityRev"></p>
+                <p id="billStateRev"></p>
+                <p id="billZipRev"></p>
+            </div>
+            <div id="compPrimContactReview" class="reviewDiv">
+                <p class="reviewP">Primary Client Contact</p>
+                <p id="primContactNameRev"></p>
+                <p id="primContactTitleRev"></p>
+                <p id="primContactEmailRev"></p>
+                <p id="primContactCellRev"></p>
+
+            </div>
+            <div id="compAddBillReview" class="reviewDiv">
+                <p>Billing Contact/ Add'l Info</p>
+                <p id="billContactNameRev"></p>
+                <p id="billContactCellRev"></p>
+                <p id="billContactEmailRev"></p>
+                <p id="billInvCommentRev"></p>
+            </div>
+
+            <div id="addContact0Review" class="reviewDiv">
+                <p>Additional Contact #1</p>
+                <p id="addContactName0Rev"></p>
+                <p id="addContactCell0Rev"></p>
+                <p id="addContactEmail0Rev"></p>
+                <p id="addContactReason0Rev"></p>
+            </div>
+
+            <div id="addContact1Review" class="reviewDiv">
+                <p>Additional Contact #2</p>
+                <p id="addContactName1Rev"></p>
+                <p id="addContactCell1Rev"></p>
+                <p id="addContactEmail1Rev"></p>
+                <p id="addContactReason1Rev"></p>
+            </div>
+
+            <div id="addContact0Review" class="reviewDiv">
+                <p>Additional Contact #3</p>
+                <p id="addContactName2Rev"></p>
+                <p id="addContactCell2Rev"></p>
+                <p id="addContactEmail2Rev"></p>
+                <p id="addContactReason2Rev"></p>
+            </div>
+
+            <div class="back">
+                <p id="back"><span class="material-icons">
+                        undo
+                    </span> &nbsp; Edit Info</p>
+                <p id="close">close</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="contractsDiv" class="jsHide">
+        <h5>Add Attachments</h5>
+
+        <div class="heading valign-wrapper">
+            <div class="really">
+                <p>+ Instructions</p>
+            </div>
+        </div>
+        <div class="jsHide">
+            <p class="instructions">
+                Click the heading to open the file selection dialog.
+            </p>
+            <p class="instructions">
+                <span class="txtred">Attached the wrong file?</span> To attach a different file,
+                re-do what you
+                just did, but select a different file this time. :)
+            </p>
+            <p class="instructions">
+                <span class="txtred">Need to remove attached files?</span> To remove the attached
+                file, click
+                the heading to open the file selection dialog, then click 'Cancel' to close it
+                without selecting
+                any files.
+            </p>
+        </div>
+
+        <div class="heading">
+            <input type="file" id="attachMSAFile">
+            <span class="material-icons iconDivNot">
+                attach_file
+            </span>
+            <label class="addFiles" for="attachMSAFile">
+                <h5 class="reallyNot">Attach MSA</h5>
+            </label>
+        </div>
+
+        <div class="heading">
+            <input type="file" id="attachQuoteFile" class="jsMultiAttach" multiple>
+            <span class="material-icons iconDivNot">
+                attach_file
+            </span>
+            <label class="addFiles" for="attachQuoteFile">
+                <h5 class="reallyNot">Attach Quote(s)</h5>
+            </label>
+        </div>
+
+        <div class="heading">
+            <input type="file" id="attachCOIFile">
+            <span class="material-icons iconDivNot">
+                attach_file
+            </span>
+            <label class="addFiles" for="attachCOIFile">
+                <h5 class="reallyNot">Attach COI</h5>
+            </label>
+        </div>
+
+        <div class="heading">
+            <input type="file" id="attachNameChgFile">
+            <span class="material-icons iconDivNot">
+                attach_file
+            </span>
+            <label class="addFiles" for="attachNameChgFile">
+                <h5 class="reallyNot">Attach Name Change</h5>
+            </label>
+        </div>
+
+        <div class="heading">
+            <input type="file" id="attachMiscFile" class="jsMultiAttach" multiple>
+            <span class="material-icons iconDivNot">
+                attach_file
+            </span>
+            <label class="addFiles" for="attachMiscFile">
+                <h5 class="reallyNot">Attach Misc File</h5>
+            </label>
+        </div>
+
+        <div class='next center-align'>
+            <button id='submit_smith_AddCustomer' class="btn waves-effect waves-light btn-large indigo darken-2">Submit
+                Customer
+            </button>
+        </div>
+    </div>
+</form>
+            </main>
+
+            <footer></footer>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <?!= include('smith_addCustomer_JS'); ?>
+   
+</body>
+
+</html>

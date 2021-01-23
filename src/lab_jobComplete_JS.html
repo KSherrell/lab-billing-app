@@ -1,0 +1,59 @@
+<script>
+
+//SUBMITTING THE FORM!! and assembling the formObj
+$('#jobCompleteBtn').click(function (e) {
+        e.preventDefault();
+       //disable the submit button to prevent multiple submissions
+        $('#jobCompleteBtn').attr('disabled', true);
+        
+        $("#loaderDiv").show();
+        $("#myForm2").hide();
+         
+         //figure the collection fees
+         let mileage = .95;
+         let hourly = 98;
+         let techs = $("#techsCollectionFee").val();
+         let miles = $("#milesCollectionFee").val();
+         let hours = $("#hoursCollectionFee").val();
+         let collectionFees = (techs * mileage * miles) + (techs * hourly * hours);
+
+//put monies to the additional costs
+let liquidHD = (document.myForm2.liquidHD.checked) ? 25 : 0;
+let cylRental = (document.myForm2.cylRental.checked) ? 10 : 0;
+let chemConsult = (document.myForm2.chemConsult.checked) ? 150 : 0;
+let pistonRental = (document.myForm2.pistonRental.checked) ? 50 : 0; 
+
+let jcDataObj = {
+"labJobId": $("#labJobId").val(), 
+"collectionFees": collectionFees, 
+"liquidHD": liquidHD, 
+"cylRental": cylRental,
+"chemConsult": chemConsult,
+"pistonRental": pistonRental
+};
+
+google.script.run.withSuccessHandler(anotherJC).logJobComplete(jcDataObj);
+
+function anotherJC(trigger) {
+   
+    $('#jobCompleteBtn').attr('disabled', false);
+    document.getElementById("myForm2").reset();
+    $("#loaderDiv").hide();
+    $("#myForm2").show();
+        
+    if (trigger == 'AOK') {
+        alert('Logged and ready for Marci. ');
+    }
+    if (trigger == "notFound"){
+        alert('Job ID not found.');
+    }
+}
+})
+
+$(document).ready(function () {
+$("#loaderDiv").hide();
+
+
+});
+
+</script>
